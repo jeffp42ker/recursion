@@ -88,17 +88,33 @@
 (defn inits [a-seq]
   (cond (empty? a-seq) (cons () (reverse a-seq))
         :else (cons (seq a-seq)
+
                     (inits (reverse (rest (reverse a-seq)))))))
+
+(defn rotations-helper-map [a-seq]
+  (let [observed-rotations {}]
+    (cond (not (contains? observed-rotations a-seq))))
+    )
+
 ;; currently broken
 (defn rotations [a-seq]
-  (cond (empty? a-seq) ()
-        :else (rotations (cons (first a-seq) (reverse (rest a-seq))))))
+  (cond ())
+  (let [last-first (first (reverse a-seq))]
+    (while (not (= last-first (first a-seq)))
+      (rotations (concat (rest a-seq) (cons (first a-seq) ()))))))
 
 (defn my-frequencies-helper [freqs a-seq]
-  [:-])
+  (if (empty? a-seq)
+    n
+    (let [new-count (if (= elem (first coll))
+                      (inc n)
+                      n)]
+      (count-elem-helper new-count
+                         elem
+                         (rest coll)))))
 
 (defn my-frequencies [a-seq]
-  [:-])
+  (frequencies-helper {} a-seq))
 
 (defn un-frequencies [a-map]
   [:-])
