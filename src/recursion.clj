@@ -23,6 +23,7 @@
 
 (defn seq-max [seq-1 seq-2]
   (cond (< (count seq-1) (count seq-2)) seq-2
+        (= (count seq-1) (count seq-2)) seq-2
         :else seq-1))
 
 (defn longest-sequence [a-seq]
@@ -54,8 +55,11 @@
 
 (defn seq= [a-seq b-seq]
   (cond (and (empty? a-seq) (empty? b-seq)) true
-        (= (first a-seq) (first b-seq)) (seq= (rest a-seq) (rest b-seq))
-        :else false))
+        (and (empty? a-seq) (seq b-seq)) false
+        (and (seq a-seq) (empty? b-seq)) false
+        (not= (first a-seq) (first b-seq)) false
+        :else
+        (seq= (rest a-seq) (rest b-seq))))
 
 (defn my-map [f seq-1 seq-2]
   (cond (or (empty? seq-1) (empty? seq-2)) ()
