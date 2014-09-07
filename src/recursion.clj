@@ -65,6 +65,7 @@
 
 (defn power [n k]
   (cond (= k  0) 1
+
         :else (* n (power n (dec k)))))
 
 (defn fib [n]
@@ -87,16 +88,8 @@
         :else (cons (seq a-seq) (tails (rest a-seq)))))
 
 (defn inits [a-seq]
-  (cond ((empty? a-seq) (reverse a-seq))
-        :else (cons (seq a-seq)
-                    (inits (reverse (rest (reverse a-seq)))))))
-
-(defn rotations-helper-map [a-seq]
-  (let [observed-rotations {}]
-    (cond (not (contains? observed-rotations a-seq))
-          false)))
-
-;; currently broken
+  (cond (empty? a-seq) '(())
+        :else (cons (seq a-seq) (inits (butlast a-seq)))))
 
 (defn rotations [a-seq]
   (cond (empty? a-seq) '(())
@@ -115,35 +108,55 @@
               new-seq (concat (rest current-seq) (cons (first current-seq) ()))]
           (rotations (cons new-seq a-seq)))))
 
-#_(defn my-frequencies-helper [freqs a-seq]
-  (if (empty? a-seq)
-     (let [new-count (if (= elem (first coll))
-                      (inc n)
-                      n)]
-      (count-elem-helper new-count
-                         elem
-                         (rest coll)))))
+(defn my-frequencies-helper [freqs a-seq]
+  (cond (empty? a-seq) freqs
+        :else (let [elem (first a-seq)
+                    prev-count (cond (contains? freqs elem) (get freqs elem)
+                                     :else 0)]
+                (recur (assoc freqs elem (inc prev-count)) (vec (rest a-seq))))))
 
-#_(defn my-frequencies [a-seq]
-  (frequencies-helper {} a-seq))
+(defn my-frequencies [a-seq]
+  (my-frequencies-helper {} a-seq))
+
+(defn un-frequencies-helper [freqs a-seq]
+  (cond (empty? freqs) a-seq
+        :else (let [[k v] (first freqs)]
+                (recur (rest freqs) (concat (repeat v k) a-seq)))))
 
 (defn un-frequencies [a-map]
-  [:-])
+  (un-frequencies-helper a-map []))
 
 (defn my-take [n coll]
-  [:-])
+  (cond (empty? coll) '()
+        (= 0 n) '()
+        :else (cons (first coll) (my-take (dec n) (rest coll)))))
 
 (defn my-drop [n coll]
-  [:-])
+  (cond (empty? coll) '()
+        (= 0 n) coll
+        :else (my-drop (dec n) (rest coll))))
 
 (defn halve [a-seq]
-  [:-])
+  (let [divide-loc (int (/ (count a-seq) 2))]
+    [(my-take divide-loc a-seq) (my-drop divide-loc a-seq)]
+    ))
 
 (defn seq-merge [a-seq b-seq]
-  [:-])
+  (cond (empty? a-seq) b-seq
+        (empty? b-seq) a-seq
+        :else
+        (let [a (first a-seq)
+              b (first b-seq)]
+          (if (> a b)
+            (cons b (seq-merge a-seq (rest b-seq)))
+            (cons a (seq-merge (rest a-seq) b-seq))))))
 
 (defn merge-sort [a-seq]
-  [:-])
+  (cond (empty? a-seq) '()
+        (< (count a-seq) 2) (seq a-seq)
+        :else
+        (let [[a b] (halve a-seq)]
+          (seq-merge (merge-sort a) (merge-sort b)) )))
 
 (defn split-into-monotonics [a-seq]
   [:-])
